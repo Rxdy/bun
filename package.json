@@ -1,0 +1,24 @@
+{
+    "name": "bun",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "start": "bun src/app.ts",
+        "dev": "bun --watch src/app.ts",
+        "prisma:generate": "bunx prisma generate",
+        "prisma:migrate": "bunx prisma migrate dev"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.2.5",
+        "ts-node": "^10.9.2"
+    },
+    "peerDependencies": {
+        "typescript": "^5.8.2"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.5.0",
+        "hono": "^4.7.4",
+        "prisma": "^6.5.0"
+    }
+}
