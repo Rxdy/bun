@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
     app:
         image: oven/bun:1
@@ -11,9 +9,9 @@ services:
             - .:/app
         environment:
             - PORT=3000
-            - DATABASE_URL=mysql://user:password@mysql:3306/mydb
+            - DATABASE_URL=mysql://root:root@mysql:3306/mydb
         command: >
-            sh -c "sleep 3 && bun install && bunx prisma migrate dev --name init && bunx prisma generate && bun --watch src/app.ts"
+            sh -c "sleep 3 && bun install && bunx prisma migrate deploy && bunx prisma generate && bun --watch src/app.ts"
         depends_on:
             - mysql
 
@@ -21,12 +19,8 @@ services:
         image: mysql:8
         container_name: BddMysql
         environment:
-            - MYSQL_ROOT_PASSWORD=rootpassword
-            - MYSQL_DATABASE=mydb
-            - MYSQL_USER=user
-            - MYSQL_PASSWORD=password
-        ports:
-            - "3306:3306"
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=mydb 
         volumes:
             - mysqldata:/var/lib/mysql
 
@@ -37,8 +31,8 @@ services:
             - "8080:80"
         environment:
             - PMA_HOST=mysql
-            - PMA_USER=user
-            - PMA_PASSWORD=password
+            - PMA_USER=root
+            - PMA_PASSWORD=root
         depends_on:
             - mysql
 
