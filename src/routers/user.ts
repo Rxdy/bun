@@ -4,8 +4,8 @@ import { userController } from "../controllers/user";
 
 export const router = new Hono();
 
-router.get("/", userValidator.getUsers, userController.get);
+router.get("/", userController.get);
 
-router.post("/", userValidator.createUser, userController.create);
+router.post("/", userValidator.create, userController.create);
 
-router.put("/:id", userValidator.updateUser, userController.update);
+router.put("/:id", userValidator.update, userController.update);

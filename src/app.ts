@@ -10,10 +10,8 @@ function logToFile(message: string) {
 }
 
 const app = new Hono();
-  
-// Middleware pour loguer les requêtes
+
 app.use("*", async (c: Context, next: Next) => {
-    
     const startTime = Date.now();
 
     await next();
@@ -22,18 +20,18 @@ app.use("*", async (c: Context, next: Next) => {
 
     const duration = endTime - startTime;
 
-    let logMessage = "--------------------------------------------------------\n";
+    let logMessage =
+        "--------------------------------------------------------\n";
     logMessage += `Heure : ${new Date().toISOString()}\n`;
     logMessage += `Méthode : ${c.req.method}\n`;
     logMessage += `URL : ${c.req.url}\n`;
     logMessage += `Temps requête : ${duration}ms\n`;
 
     logToFile(logMessage);
-    
 });
 
 app.route("/users", userRouter);
-app.route("/auth", authRouter)
+app.route("/auth", authRouter);
 
 app.get("/", (c: Context) => c.text("API avec Bun et Hono !"));
 

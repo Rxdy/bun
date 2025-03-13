@@ -1,15 +1,7 @@
 import { type Context, type Next } from "hono";
 
 class UserValidator {
-    async getUsers(c: Context, next: Next) {
-        const limit = c.req.query("limit");
-        if (limit && isNaN(Number(limit))) {
-            return c.json({ error: "Limit must be a number" }, 400);
-        }
-        await next();
-    }
-
-    async createUser(c: Context, next: Next) {
+    async create(c: Context, next: Next) {
         const body = await c.req.json();
         if (!body.name || typeof body.name !== "string") {
             return c.json(
@@ -23,7 +15,7 @@ class UserValidator {
         await next();
     }
 
-    async updateUser(c: Context, next: Next) {
+    async update(c: Context, next: Next) {
         const id = c.req.param("id");
         const body = await c.req.json();
         if (!id || isNaN(Number(id))) {

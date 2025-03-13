@@ -20,10 +20,11 @@ services:
         container_name: BddMysql
         environment:
             - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=mydb 
+            - MYSQL_DATABASE=mydb
         volumes:
             - mysqldata:/var/lib/mysql
-
+        ports:
+            - "3306:3306"
     phpmyadmin:
         image: phpmyadmin:5
         container_name: myAdmin
