@@ -7,21 +7,19 @@ services:
             - "3000:3000"
         volumes:
             - .:/app
-        environment:
-            - PORT=3000
-            - DATABASE_URL=mysql://root:root@mysql:3306/mydb
+        env_file:
+            - env/.env.dev
         command: >
-            sh -c "sleep 3 && bun install && bunx prisma migrate deploy && bunx prisma generate && bun --watch src/app.ts"
+            sh -c "sleep 10 && bun install && bunx prisma migrate dev && bunx prisma generate && bun --watch src/app.ts"
         depends_on:
             - mysql
-
     mysql:
         image: mysql:8
         container_name: BddMysql
-        environment:
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=mydb
+        env_file:
+            - env/.env.dev
         volumes:
+            - ./env/sql/initUser.sql:/docker-entrypoint-initdb.d/init.sql
             - mysqldata:/var/lib/mysql
         ports:
             - "3306:3306"
@@ -30,12 +28,9 @@ services:
         container_name: myAdmin
         ports:
             - "8080:80"
-        environment:
-            - PMA_HOST=mysql
-            - PMA_USER=root
-            - PMA_PASSWORD=root
+        env_file:
+            - env/.env.dev
         depends_on:
             - mysql
-
 volumes:
     mysqldata:

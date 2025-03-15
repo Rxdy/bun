@@ -38,7 +38,7 @@ class AuthController {
             `token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/`
         );
 
-        return c.json({ message: "Connexion réussie" });
+        return c.json({}, 200);
     }
 }
 

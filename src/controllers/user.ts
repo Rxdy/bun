@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 
 class UserController {
     async get(c: Context) {
+        console.log("🚀 GET /users/ called!");
         const limit = Number(c.req.query("limit")) || 10;
         const users = await prisma.user.findMany({ take: limit });
         return c.json(users);
