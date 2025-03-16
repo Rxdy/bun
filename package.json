@@ -12,6 +12,7 @@
     "devDependencies": {
         "@types/bcrypt": "^5.0.2",
         "@types/bun": "^1.2.5",
+        "@types/jsonwebtoken": "^9.0.9",
         "ts-node": "^10.9.2"
     },
     "peerDependencies": {
