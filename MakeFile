@@ -1,6 +1,5 @@
 ENV = dev
 
-
 res:
 	docker compose restart
 
@@ -17,8 +16,8 @@ mig:
 	fi
 	docker exec API-BUN sh -c "bunx prisma migrate dev --name $(name) && bunx prisma generate"
 
-bdd:
-	
+seed:
+	docker exec -it API-BUN bun run scripts/seed.ts
 
 test: 
 	docker compose -f docker-compose.test.yml up --abort-on-container-exit
