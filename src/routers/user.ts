@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { validate } from "../middlewares/validate"
+import { validate } from "../middlewares/validate";
 import { userSchema } from "../validators/user";
 import { userController } from "../controllers/user";
 
@@ -10,3 +10,5 @@ router.get("/", userController.get);
 router.post("/", validate(userSchema), userController.create);
 
 router.put("/:id", validate(userSchema), userController.update);
+
+router.delete("/:id", userController.delete);

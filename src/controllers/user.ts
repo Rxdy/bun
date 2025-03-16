@@ -4,9 +4,7 @@ import bcrypt from "bcrypt";
 
 class UserController {
     async get(c: Context) {
-        console.log("🚀 GET /users/ called!");
-        const limit = Number(c.req.query("limit")) || 10;
-        const users = await prisma.user.findMany({ take: limit });
+        const users = await prisma.user.findMany();
         return c.json(users);
     }
 
@@ -24,11 +22,19 @@ class UserController {
     }
 
     async update(c: Context) {
-        const id = c.req.param("id");
+        const id = Number(c.req.param("id"));
         const body = await c.req.json();
         await prisma.user.update({
             where: { id: id },
             data: { name: body.name, email: body.email },
+        });
+        return c.json({}, 200);
+    }
+
+    async delete(c: Context) {
+        const id = Number(c.req.param("id"));
+        await prisma.user.delete({
+            where: { id: id },
         });
         return c.json({}, 200);
     }

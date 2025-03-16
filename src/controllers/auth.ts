@@ -1,13 +1,13 @@
 import { type Context } from "hono";
 import { prisma } from "../tools/prisma";
-import bcrypt from "bcrypt";
+import { crypt } from "../tools/crypt";
 import { sign } from "jsonwebtoken";
 
 class AuthController {
     async register(c: Context) {
         const { name, email, password } = await c.req.json();
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await crypt.hash(password, "pwd");
         try {
             await prisma.user.create({
                 data: { name: name, email: email, password: hashedPassword },
@@ -24,11 +24,9 @@ class AuthController {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return c.json({ error: "Utilisateur non trouvé" }, 404);
 
-        // Vérification du mot de passe
-        const match = await bcrypt.compare(password, user.password);
+        const match = await crypt.compare(password, user.password);
         if (!match) return c.json({ error: "Mot de passe incorrect" }, 401);
 
-        // Création du token JWT
         const token = sign({ userId: user.id }, process.env.JWT_SECRET!, {
             expiresIn: "1h",
         });
