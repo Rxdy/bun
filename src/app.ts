@@ -1,9 +1,8 @@
 import { Hono, type Context, type Next } from "hono";
 import { router as userRouter } from "./routers/user";
 import { router as authRouter } from "./routers/auth";
-import * as dotenv from "dotenv";
-dotenv.config({ path: "./env/.env.dev.local" });
 import * as fs from "fs";
+
 console.log("🚀 Lancement de app.ts...");
 
 function logToFile(message: string) {
@@ -36,7 +35,7 @@ app.route("/users", userRouter);
 app.route("/auth", authRouter);
 
 app.get("/", (c: Context) => c.text("API avec Bun et Hono !"));
-console.log("API Bun start")
+
 export default {
     port: process.env.PORT || 3000,
     fetch: app.fetch,

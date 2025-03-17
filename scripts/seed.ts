@@ -17,8 +17,8 @@ async function seed() {
     const hashedUsers = await Promise.all(
         users.map(async (user) => ({
             name: user.name,
-            email: await crypt.hash(user.email, "mail"),
-            password: await crypt.hash(process.env.PASS_DEFAULT!, "pwd"),
+            email: user.email,
+            password: await crypt.hash(process.env.PASS_DEFAULT!),
         }))
     );
 

@@ -10,5 +10,12 @@ export const userSchema = z.object({
     email: z.string().email("L'email doit être valide"),
     password: z
         .string()
-        .min(15, "Le mot de passe doit contenir au moins 15 caractères"),
+        .min(10, "Le mot de passe doit contenir au moins 10 caractères"),
+});
+
+export const logSchema = z.object({
+    email: z.string().email("L'email doit être valide"),
+    password: z
+        .string()
+        .min(10, "Le mot de passe doit contenir au moins 10 caractères"),
 });

@@ -1,16 +1,21 @@
 import { type Context } from "hono";
 import { prisma } from "../tools/prisma";
+
 import { crypt } from "../tools/crypt";
 import { sign } from "jsonwebtoken";
 
 class AuthController {
     async register(c: Context) {
-        const { name, email, password } = await c.req.json();
+        const data = c.get("validatedBody");
 
-        const hashedPassword = await crypt.hash(password, "pwd");
+        const hashedPassword = await crypt.hash(data.password);
         try {
             await prisma.user.create({
-                data: { name: name, email: email, password: hashedPassword },
+                data: {
+                    name: data.name,
+                    email: data.email,
+                    password: hashedPassword,
+                },
             });
             return c.json({}, 200);
         } catch (error) {
@@ -19,13 +24,23 @@ class AuthController {
     }
 
     async signin(c: Context) {
-        const { email, password } = await c.req.json();
+        const data = c.get("validatedBody");
+        const user = await prisma.user.findUnique({
+            where: { email: data.email },
+        });
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return c.json({ error: "Utilisateur non trouvé" }, 404);
+        if (!user)
+            return c.json(
+                { error: "Mot de passe ou identifiant incorrect" },
+                400
+            );
 
-        const match = await crypt.compare(password, user.password);
-        if (!match) return c.json({ error: "Mot de passe incorrect" }, 401);
+        const match = await crypt.compare(data.password, user.password);
+        if (!match)
+            return c.json(
+                { error: "Mot de passe ou identifiant incorrect" },
+                400
+            );
 
         const token = sign({ userId: user.id }, process.env.JWT_SECRET!, {
             expiresIn: "1h",
@@ -37,6 +52,19 @@ class AuthController {
         );
 
         return c.json({}, 200);
+    }
+
+    async logout(c: Context) {
+        c.header(
+            "Set-Cookie",
+            `token=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`
+        );
+        c.header(
+            "Set-Cookie",
+            `refresh_token=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`
+        );
+
+        return c.json({ message: "Déconnexion réussie" }, 200);
     }
 }
 

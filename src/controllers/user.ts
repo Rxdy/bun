@@ -1,6 +1,6 @@
 import { type Context } from "hono";
 import { prisma } from "../tools/prisma";
-import bcrypt from "bcrypt";
+import { crypt } from "../tools/crypt";
 
 class UserController {
     async get(c: Context) {
@@ -9,12 +9,12 @@ class UserController {
     }
 
     async create(c: Context) {
-        const body = await c.req.json();
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const userData = c.get("validatedBody");
+        const hashedPassword = await crypt.hash(userData.password);
         await prisma.user.create({
             data: {
-                name: body.name,
-                email: body.email,
+                name: userData.name,
+                email: userData.email,
                 password: hashedPassword,
             },
         });
@@ -23,10 +23,10 @@ class UserController {
 
     async update(c: Context) {
         const id = Number(c.req.param("id"));
-        const body = await c.req.json();
+        const userData = c.get("validatedBody");
         await prisma.user.update({
             where: { id: id },
-            data: { name: body.name, email: body.email },
+            data: { name: userData.name, email: userData.email },
         });
         return c.json({}, 200);
     }
